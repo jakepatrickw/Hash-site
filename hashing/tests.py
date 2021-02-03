@@ -1,6 +1,8 @@
 from django.test import TestCase
 from selenium import webdriver
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+import hashlib
+from .forms import HashForm
 
 # class FunctionalTestCase(TestCase):
 
@@ -10,7 +12,7 @@ from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 
 #     def test_home_page(self):
 #         self.browser.get('http://localhost:8000')
-#         self.assertIn('Enter hash', self.browser.page_source)
+#         self.assertIn('Enter hash here', self.browser.page_source)
 
 #     def test_hash_of_hello(self):
 #         self.browser.get('http://localhost:8000')
@@ -43,3 +45,11 @@ class UnitTestCase(TestCase):
         response = self.client.get('/')
         self.assertTemplateUsed(response, 'hashing/home.html')
 
+    def test_hash_form(self):
+        form = HashForm(data={'text':'hello'})
+        self.assertTrue(form.is_valid())
+
+    def test_hash_function_works(self):
+        text_hash = hashlib.sha256('hello'.encode('utf-8')).hexdigest()
+        self.assertEqual('2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824', text_hash)
+        
